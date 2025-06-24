@@ -1,6 +1,7 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import React, { useRef } from "react";
+import type React from "react";
+import { useRef } from "react";
 import { signIn } from "next-auth/react";
 
 export default function LoginComponents() {
