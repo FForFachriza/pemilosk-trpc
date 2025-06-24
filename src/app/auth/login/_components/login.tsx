@@ -1,28 +1,51 @@
 "use client";
-import { useSearchParams } from "next/navigation";
 import type React from "react";
-import { useRef } from "react";
+import { useEffect } from "react";
+import { useState } from "react";
 import { signIn } from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import { useQueryState } from "nuqs";
 
 export default function LoginComponents() {
-	const usernameRef = useRef<HTMLInputElement>(null);
-	const passwordRef = useRef<HTMLInputElement>(null);
-	const searchParams = useSearchParams();
-	const error = searchParams.get("error");
+	const [nis, setNis] = useState<string>("");
+	const [password, setPassword] = useState<string>("");
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [error] = useState<string>("");
 
-	const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+	const [urlError] = useQueryState("error");
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: Error Akan Ada Ketika Param Error Berganti
+	useEffect(() => {
+		if (error) {
+			toast.error("Nis Dan Password Salah!");
+		}
+	}, [urlError]);
+
+	const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		const username = usernameRef.current?.value;
-		const password = passwordRef.current?.value;
+		if (!nis || !password) return;
 
-		if (!username || !password) return;
+		try {
+			setIsLoading(true);
 
-		signIn("credentials", {
-			username,
-			password,
-			redirectTo: `${window.location.origin}/`,
-		});
+			const tryLogin = await signIn("credentials", {
+				username: nis,
+				password,
+				redirectTo: `${window.location.origin.replace(/\/$/, "")}?first=true`,
+			});
+
+			if (tryLogin?.ok) {
+				setIsSuccess(true);
+			}
+		} catch (err) {
+			toast.error("Error Yang Tidak Diketahui Terjadi, Dimohon Coba Kembali");
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	return (
@@ -34,48 +57,32 @@ export default function LoginComponents() {
 					</h1>
 					<form onSubmit={submitHandler} className="space-y-4 md:space-y-6">
 						<div>
-							<label
-								htmlFor="username"
-								className="mb-2 block font-medium text-gray-900 text-sm"
-							>
-								Username
-							</label>
-							<input
-								id="username"
-								type="number"
-								ref={usernameRef}
-								className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-primary-600 focus:ring-primary-600 sm:text-sm"
-								placeholder="dimasavrianfachriza"
+							<Label htmlFor="nis" className={"mb-2"}>
+								NIS
+							</Label>
+							<Input
+								onChange={(e) => setNis(e.target.value)}
+								id={"nis"}
+								placeholder="10075"
 								required
+								type={"number"}
 							/>
 						</div>
 						<div>
-							<label
-								htmlFor="password"
-								className="mb-2 block font-medium text-gray-900 text-sm"
-							>
+							<Label htmlFor="password" className={"mb-2"}>
 								Password
-							</label>
-							<input
-								id="password"
-								type="password"
-								ref={passwordRef}
-								placeholder="••••••••"
-								className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-primary-600 focus:ring-primary-600 sm:text-sm"
+							</Label>
+							<Input
+								onChange={(e) => setPassword(e.target.value)}
+								id={"password"}
 								required
+								type={"password"}
+								placeholder="●●●●●●●"
 							/>
 						</div>
-						{error === "CredentialsSignin" && (
-							<div className="text-center font-medium text-red-500 text-sm">
-								Invalid username or password
-							</div>
-						)}
-						<button
-							type="submit"
-							className="btn w-full rounded-lg border-none bg-[#1A56DB] px-5 py-2.5 text-center font-medium text-sm text-white hover:bg-[#1441a3]"
-						>
+						<Button disabled={isLoading} className="w-full hover:bg-[#1441a3]">
 							Sign in
-						</button>
+						</Button>
 					</form>
 				</div>
 			</div>
