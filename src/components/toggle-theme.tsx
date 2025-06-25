@@ -5,15 +5,15 @@ import { useTheme } from "next-themes";
 import { Toggle } from "@/components/ui/toggle";
 
 export function ToggleTheme() {
-	const { setTheme, theme } = useTheme();
+	const { setTheme, resolvedTheme } = useTheme();
 
 	const handleToggle = () => {
-		setTheme(theme === "dark" ? "light" : "dark");
+		setTheme(resolvedTheme === "dark" ? "light" : "dark");
 	};
 
 	return (
 		<Toggle onClick={handleToggle} aria-label="Toggle theme">
-			{theme === "dark" ? "🌙" : "☀️"}
+			{resolvedTheme === "dark" ? "🌙" : "☀️"}
 		</Toggle>
 	);
 }
