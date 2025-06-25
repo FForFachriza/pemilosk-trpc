@@ -13,13 +13,10 @@ export default function LoginComponents() {
 	const [nis, setNis] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const [error] = useState<string>("");
-
 	const [urlError] = useQueryState("error");
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: Error Akan Ada Ketika Param Error Berganti
 	useEffect(() => {
-		if (error) {
+		if (urlError) {
 			toast.error("Nis Dan Password Salah!");
 		}
 	}, [urlError]);
@@ -32,15 +29,11 @@ export default function LoginComponents() {
 		try {
 			setIsLoading(true);
 
-			const tryLogin = await signIn("credentials", {
+			await signIn("credentials", {
 				username: nis,
 				password,
 				redirectTo: `${window.location.origin.replace(/\/$/, "")}?first=true`,
 			});
-
-			if (tryLogin?.ok) {
-				setIsSuccess(true);
-			}
 		} catch (err) {
 			toast.error("Error Yang Tidak Diketahui Terjadi, Dimohon Coba Kembali");
 		} finally {
