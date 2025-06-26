@@ -1,5 +1,5 @@
-import LoginComponents from "@/app/auth/login/_components/login";
-import InfoComponents from "@/app/auth/login/_components/info";
+import LoginComponents from "@/app/(login)/auth/login/_components/login";
+import InfoComponents from "@/app/(login)/auth/login/_components/info";
 
 export default function Login() {
 	return (

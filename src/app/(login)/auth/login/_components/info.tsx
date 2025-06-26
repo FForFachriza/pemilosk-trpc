@@ -1,6 +1,6 @@
 export default function InfoComponents() {
 	return (
-		<div className="flex h-full flex-col justify-center space-y-4 p-14 md:p-24">
+		<div className="flex h-full flex-col justify-center space-y-4 p-14 text-white md:p-24">
 			<p className="font-bold text-3xl">Pemilosk</p>
 			<h1 className="font-bold text-4xl">
 				{" "}
