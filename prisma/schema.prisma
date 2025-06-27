@@ -2,63 +2,132 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "postgresql"
-    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
+  // Further reading:
+  // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
+  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+  url      = env("DATABASE_URL")
 }
 
 model User {
-    id            String        @id @default(cuid())
-    nis           Int?       @unique
-    password      String?
-    role          Role?
-    selectedOsis  Boolean       @default(false)
-    selectedMpk   Boolean       @default(false)
-    osisChoice    KandidatOsis? @relation(fields: [osisChoiceid], references: [id])
-    osisChoiceid  String?
-    mpkChoice     KandidatMpk?  @relation(fields: [kandidatMpkId], references: [id])
-    kandidatMpkId String?
-    createdAt     DateTime      @default(now())
-    updatedAt     DateTime?     @updatedAt
+  id            String         @id @default(cuid())
+  nis           Int?           @unique
+  password      String?
+  role          Role?
+  osisChoice    KandidatOsis?  @relation("UserOsisChoice", fields: [osisChoiceid], references: [id])
+  osisChoiceid  String?
+  mpkChoice     KandidatMpk?   @relation("UserMpkChoice", fields: [kandidatMpkId], references: [id])
+  kandidatMpkId String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime?      @updatedAt
+  votingChance  VotingChance[] @relation("UserVotingChance")
+
+  @@map("users")
 }
 
 model KandidatOsis {
-    id        String   @id @default(cuid())
-    nama      String   @unique
-    foto      String?
-    visi      String?
-    misi      String?
-    slogan    String?
-    proker    String?
-    pemilih   User[]
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  id        String   @id @default(cuid())
+  nama      String   @unique
+  foto      String?
+  visi      String?
+  misi      String?
+  slogan    String?
+  proker    String?
+  pemilih   User[]   @relation("UserOsisChoice")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  pasanganOsis   PasanganOsis? @relation("OsisCandidatePartner", fields: [pasanganOsisId], references: [id])
+  pasanganOsisId String?       @unique
+  periode        Periode?      @relation("OsisCandidatePeriode", fields: [periodeId], references: [id])
+  periodeId      String?
+
+  @@map("osis_candidates")
 }
 
 model KandidatMpk {
-    id        String   @id @default(cuid())
-    nama      String   @unique
-    foto      String?
-    visi      String?
-    misi      String?
-    slogan    String?
-    proker    String?
-    pemilih   User[]
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  id        String   @id @default(cuid())
+  nama      String   @unique
+  foto      String?
+  visi      String?
+  misi      String?
+  slogan    String?
+  proker    String?
+  pemilih   User[]   @relation("UserMpkChoice")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  pasanganMpk   PasanganMpk? @relation("MpkCandidatePartner", fields: [pasanganMpkId], references: [id])
+  pasanganMpkId String?      @unique
+  periode       Periode?     @relation("MpkCandidatePeriode", fields: [periodeId], references: [id])
+  periodeId     String?
+
+  @@map("mpk_candidates")
+}
+
+model PasanganOsis {
+  id        String        @id @default(cuid())
+  nama      String        @unique
+  foto      String?
+  kandidat  KandidatOsis? @relation("OsisCandidatePartner")
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@map("osis_partners")
+}
+
+model PasanganMpk {
+  id        String       @id @default(cuid())
+  nama      String       @unique
+  foto      String?
+  kandidat  KandidatMpk? @relation("MpkCandidatePartner")
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@map("mpk_partners")
+}
+
+model Periode {
+  id           String         @id @default(cuid())
+  nama         String         @unique // Nama periode, misal: "Periode 2024-2025"
+  startedAt    DateTime       @map("started_at")
+  endedAt      DateTime       @map("ended_at")
+  isActive     Boolean        @default(false) @map("is_active")
+  kandidatOsis KandidatOsis[] @relation("OsisCandidatePeriode")
+  kandidatMpk  KandidatMpk[]  @relation("MpkCandidatePeriode")
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+  votingChance VotingChance[] @relation("PeriodeVotingChance")
+
+  @@map("periods")
+}
+
+model VotingChance {
+  id        String  @id @default(cuid())
+  user      User    @relation("UserVotingChance", fields: [userId], references: [id], onDelete: Cascade)
+  userId    String  @map("user_id")
+  periode   Periode @relation("PeriodeVotingChance", fields: [periodeId], references: [id], onDelete: Cascade)
+  periodeId String  @map("periode_id")
+  kelas     Int // 10, 11, 12
+  slot      Int     @default(1) // Voting per kelas (6,4,2)
+
+  osisVoted Boolean @default(false) @map("osis_voted")
+  mpkVoted  Boolean @default(false) @map("mpk_voted")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([userId, periodeId])
+  @@map("voting_chances")
 }
 
 enum Role {
-    GURU
-    MURID
-    OSIS
-    MPK
-    ADMIN
+  GURU
+  MURID
+  ADMIN
 }
