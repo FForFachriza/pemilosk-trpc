@@ -13,8 +13,9 @@ import {
 	SidebarMenuItem,
 	SidebarRail,
 } from "@/components/ui/sidebar";
-import { sidebar_data } from "@/constant/sidebar_data";
+import { sidebar_data } from "@/constant/SIDEBAR_DATA";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 const data = sidebar_data;
 
@@ -37,7 +38,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 									return (
 										<SidebarMenuItem key={item.title}>
 											<SidebarMenuButton asChild isActive={isActive}>
-												<a href={item.url}>{item.title}</a>
+												<Link href={item.url}>{item.title}</Link>
 											</SidebarMenuButton>
 										</SidebarMenuItem>
 									);
