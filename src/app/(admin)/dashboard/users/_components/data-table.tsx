@@ -28,16 +28,25 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import type { inferRouterOutputs } from "@trpc/server";
+import type { AppRouter } from "@/server/api/root";
+import { parseAsString, useQueryState } from "nuqs";
+
+type RouterOutput = inferRouterOutputs<AppRouter>;
+type Periode = RouterOutput["periode"]["getPeriodes"];
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
+	periode: Periode;
 }
 
 export function DataTable<TData, TValue>({
 	columns,
 	data,
+	periode,
 }: DataTableProps<TData, TValue>) {
+	const [_, setPeriodeId] = useQueryState("periode", parseAsString);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [rowSelection, setRowSelection] = useState({});
 	const table = useReactTable({
@@ -51,8 +60,6 @@ export function DataTable<TData, TValue>({
 		state: { columnFilters, rowSelection },
 	});
 
-	console.log(rowSelection);
-
 	return (
 		<div>
 			<div className="flex items-center justify-between gap-x-4 py-4 md:gap-x-0">
@@ -65,15 +72,17 @@ export function DataTable<TData, TValue>({
 					}
 					className="max-w-sm"
 				/>
-				{/*TODO: IMPLEMENT PERIODE HERE*/}
-				<Select>
+				<Select onValueChange={(val) => setPeriodeId(val)}>
 					<SelectTrigger>
 						<SelectValue placeholder="Pilih Periode" />
 					</SelectTrigger>
 					<SelectContent>
-						<SelectItem value="light">Light</SelectItem>
-						<SelectItem value="dark">Dark</SelectItem>
-						<SelectItem value="system">System</SelectItem>
+						<SelectItem value={"all"}>All Periode</SelectItem>
+						{periode.map(({ nama, id }) => (
+							<SelectItem key={id} value={id}>
+								{nama}
+							</SelectItem>
+						))}
 					</SelectContent>
 				</Select>
 			</div>

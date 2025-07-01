@@ -7,7 +7,7 @@ export default async function UsersAdmin() {
 	const session = await auth();
 
 	if (session?.user) {
-		await api.user.getUsers.prefetch();
+		await api.periode.getPeriodes.prefetch();
 	}
 
 	return (
