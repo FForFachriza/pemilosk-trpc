@@ -3,11 +3,16 @@
 import { api } from "@/trpc/react";
 import { DataTable } from "@/app/(admin)/dashboard/users/_components/data-table";
 import { usersColumns } from "@/app/(admin)/dashboard/users/_components/columns";
+import { parseAsString, useQueryState } from "nuqs";
 
 export function GetUsers() {
-	const [users] = api.user.getUsers.useSuspenseQuery();
+	const [periodeId] = useQueryState("periode", parseAsString);
 
-	console.log(users);
+	const [users] = api.user.getUsers.useSuspenseQuery({
+		periodeId: periodeId ?? undefined,
+	});
 
-	return <DataTable columns={usersColumns} data={users} />;
+	const [periodes] = api.periode.getPeriodes.useSuspenseQuery();
+
+	return <DataTable columns={usersColumns} periode={periodes} data={users} />;
 }
