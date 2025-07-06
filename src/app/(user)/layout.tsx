@@ -1,5 +1,5 @@
-import type React from "react";
 import Navbar from "@/components/navbar";
+import type React from "react";
 
 export default function UserLayout({
 	children,
