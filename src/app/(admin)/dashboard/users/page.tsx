@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 import { api, HydrateClient } from "@/trpc/server";
 import { auth } from "@/server/auth";
 import { GetUsers } from "@/app/(admin)/dashboard/users/_components/get_users";
+import Loader from "@/components/loader";
 
 export default async function UsersAdmin() {
 	const session = await auth();
@@ -12,9 +13,7 @@ export default async function UsersAdmin() {
 
 	return (
 		<HydrateClient>
-			<Suspense fallback={<p>Loading...</p>}>
-				{session?.user && <GetUsers />}
-			</Suspense>
+			<Suspense fallback={<Loader />}>{session?.user && <GetUsers />}</Suspense>
 		</HydrateClient>
 	);
 }
