@@ -8,8 +8,6 @@ import CardSection from "@/app/_components/card-section";
 export default async function Home() {
 	const session = await auth();
 
-	console.log(session?.user);
-
 	if (session?.user) {
 		void api.periode.getActivePeriode.prefetch();
 	}
@@ -29,7 +27,7 @@ export default async function Home() {
 						kita.
 					</h2>
 
-					<CardSection />
+					<CardSection user={session} />
 				</section>
 
 				{/* Menu Kanan */}
