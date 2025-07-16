@@ -9,6 +9,14 @@ import { api } from "@/trpc/react";
 import { parseAsBoolean, useQueryState } from "nuqs";
 import { toast } from "sonner";
 import type { Session } from "next-auth";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function CardSection({ user }: { user: Session | null }) {
 	const [activePeriodes] = api.periode.getActivePeriode.useSuspenseQuery();
@@ -34,14 +42,11 @@ export default function CardSection({ user }: { user: Session | null }) {
 					<Button className="mt-2 w-full sm:w-48">Pilih Sekarang</Button>
 				</Link>
 			</div>
-
 			<Separator
 				orientation="vertical"
 				className="mx-4 hidden data-[orientation=vertical]:h-60 lg:block"
 			/>
-
 			<Separator className="block lg:hidden" />
-
 			{/* Card 2 */}
 			<div className="flex flex-col space-y-3 lg:w-1/2 lg:space-y-4 lg:pl-4">
 				<InfoIcon size={25} className="text-primary" />
@@ -50,9 +55,24 @@ export default function CardSection({ user }: { user: Session | null }) {
 					Cek informasi mengenai kandidat dan wakil kandidat dari Ketua OSIS dan
 					Ketua MPK di sini. Jangan sampai salah pilih!
 				</h2>
-				<Button variant={"outline"} className="mt-2 w-full sm:w-48">
-					Informasi
-				</Button>
+
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button variant={"outline"} className="mt-2 w-full sm:w-48">
+							Open
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent>
+						<DropdownMenuLabel>Pilih Informasi Kandidat</DropdownMenuLabel>
+						<DropdownMenuSeparator />
+						<DropdownMenuItem asChild>
+							<Link href={"/kandidat-osis"}>OSIS</Link>
+						</DropdownMenuItem>
+						<DropdownMenuItem asChild>
+							<Link href={"/kandidat-mpk"}>MPK</Link>
+						</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
 			</div>
 		</section>
 	);
