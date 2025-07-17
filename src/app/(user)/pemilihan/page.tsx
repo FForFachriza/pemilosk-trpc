@@ -3,6 +3,7 @@ import { HydrateClient } from "@/trpc/server";
 import UserContainer from "@/components/user-container";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { BoxesIcon, BoxIcon } from "lucide-react";
 
 export default function PemilihanPage() {
 	return (
@@ -26,7 +27,13 @@ export default function PemilihanPage() {
 				>
 					<div className={"flex flex-col gap-y-4"}>
 						<div className={"h-96 w-full rounded-lg bg-gray-700"} />
-						<Badge variant={"outline"}>OSIS</Badge>
+						<Badge
+							className={"bg-[#BCF0DA] text-[#046C4E] text-lg"}
+							variant={"outline"}
+						>
+							<BoxIcon />
+							OSIS
+						</Badge>
 						<h1 className={"font-bold text-2xl"}>Pemilihan Ketua OSIS</h1>
 						<p className={"text-justify opacity-50"}>
 							Gunakan hak pilih mu dengan baik dan benar untuk memilih Ketua
@@ -42,7 +49,13 @@ export default function PemilihanPage() {
 					</div>
 					<div className={"flex flex-col gap-y-4"}>
 						<div className={"h-96 w-full rounded-lg bg-gray-700"} />
-						<Badge variant={"outline"}>MPK</Badge>
+						<Badge
+							className={"bg-[#C3DDFD] text-lg text-primary"}
+							variant={"outline"}
+						>
+							<BoxesIcon />
+							MPK
+						</Badge>
 						<h1 className={"font-bold text-2xl"}>Pemilihan Ketua MPK</h1>
 						<p className={"text-justify opacity-50"}>
 							Gunakan hak pilih mu dengan baik dan benar untuk memilih Ketua
