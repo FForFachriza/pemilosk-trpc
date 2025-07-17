@@ -1,9 +1,7 @@
 import React from "react";
 import { HydrateClient } from "@/trpc/server";
 import UserContainer from "@/components/user-container";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { BoxesIcon, BoxIcon } from "lucide-react";
+import CardCandidates from "@/app/(user)/pemilihan/_components/card-kandidates";
 
 export default function PemilihanPage() {
 	return (
@@ -25,50 +23,8 @@ export default function PemilihanPage() {
 				<section
 					className={"mt-8 flex flex-col gap-y-8 lg:flex-row lg:gap-x-8"}
 				>
-					<div className={"flex flex-col gap-y-4"}>
-						<div className={"h-96 w-full rounded-lg bg-gray-700"} />
-						<Badge
-							className={"bg-[#BCF0DA] text-[#046C4E] text-lg"}
-							variant={"outline"}
-						>
-							<BoxIcon />
-							OSIS
-						</Badge>
-						<h1 className={"font-bold text-2xl"}>Pemilihan Ketua OSIS</h1>
-						<p className={"text-justify opacity-50"}>
-							Gunakan hak pilih mu dengan baik dan benar untuk memilih Ketua
-							OSIS. Kanidat Calon Ketua OSIS diantaranya : Ahmad Budi, Wawan,
-							Kipli Mas.
-						</p>
-						<div className="flex flex-row justify-between gap-x-2">
-							<Button className="min-w-0 flex-1">Masuk</Button>
-							<Button className="min-w-0 flex-1" variant={"outline"}>
-								Konfirmasi
-							</Button>
-						</div>
-					</div>
-					<div className={"flex flex-col gap-y-4"}>
-						<div className={"h-96 w-full rounded-lg bg-gray-700"} />
-						<Badge
-							className={"bg-[#C3DDFD] text-lg text-primary"}
-							variant={"outline"}
-						>
-							<BoxesIcon />
-							MPK
-						</Badge>
-						<h1 className={"font-bold text-2xl"}>Pemilihan Ketua MPK</h1>
-						<p className={"text-justify opacity-50"}>
-							Gunakan hak pilih mu dengan baik dan benar untuk memilih Ketua
-							OSIS. Kanidat Calon Ketua OSIS diantaranya : Ahmad Budi, Wawan,
-							Kipli Mas.
-						</p>
-						<div className="flex flex-row justify-between gap-x-2">
-							<Button className="min-w-0 flex-1">Masuk</Button>
-							<Button className="min-w-0 flex-1" variant={"outline"}>
-								Konfirmasi
-							</Button>
-						</div>
-					</div>
+					<CardCandidates type={"OSIS"} />
+					<CardCandidates type={"MPK"} />
 				</section>
 			</UserContainer>
 		</HydrateClient>
